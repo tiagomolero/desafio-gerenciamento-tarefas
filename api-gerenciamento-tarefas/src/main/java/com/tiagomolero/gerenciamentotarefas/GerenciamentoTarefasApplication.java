@@ -1,4 +1,4 @@
-package com.tiagomolero.api_gerenciamento_tarefas;
+package com.tiagomolero.gerenciamentotarefas;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

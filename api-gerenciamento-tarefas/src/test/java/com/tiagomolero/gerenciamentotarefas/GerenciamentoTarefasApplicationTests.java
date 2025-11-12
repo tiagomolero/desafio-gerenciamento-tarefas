@@ -1,4 +1,4 @@
-package com.tiagomolero.api_gerenciamento_tarefas;
+package com.tiagomolero.gerenciamentotarefas;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
