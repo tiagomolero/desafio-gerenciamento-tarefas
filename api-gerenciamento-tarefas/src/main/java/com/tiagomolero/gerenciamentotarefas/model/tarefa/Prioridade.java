@@ -1,4 +1,4 @@
-package com.tiagomolero.gerenciamentotarefas.model;
+package com.tiagomolero.gerenciamentotarefas.model.tarefa;
 
 public enum Prioridade {
     BAIXA,

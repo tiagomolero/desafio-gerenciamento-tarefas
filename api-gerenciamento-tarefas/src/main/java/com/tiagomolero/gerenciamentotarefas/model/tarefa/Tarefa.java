@@ -1,5 +1,6 @@
-package com.tiagomolero.gerenciamentotarefas.model;
+package com.tiagomolero.gerenciamentotarefas.model.tarefa;
 
+import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
