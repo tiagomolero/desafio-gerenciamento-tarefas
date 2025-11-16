@@ -3,13 +3,11 @@ package com.tiagomolero.gerenciamentotarefas.service;
 import com.tiagomolero.gerenciamentotarefas.exception.TarefaException;
 import com.tiagomolero.gerenciamentotarefas.model.tarefa.Tarefa;
 import com.tiagomolero.gerenciamentotarefas.model.tarefa.TarefaDTO;
+import com.tiagomolero.gerenciamentotarefas.model.tarefa.TarefaResponseDTO;
 import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import com.tiagomolero.gerenciamentotarefas.repository.TarefaRepository;
 import com.tiagomolero.gerenciamentotarefas.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,29 +26,42 @@ public class TarefaService {
     @Autowired
     AuthorizationService authorizationService;
 
-    public TarefaDTO criarTarefa(TarefaDTO tarefaDTO){
+    public TarefaResponseDTO criarTarefa(TarefaDTO tarefaDTO){
         Usuario usuarioLogado = authorizationService.getUsuarioLogado();
         Tarefa tarefa = new Tarefa(tarefaDTO.titulo(), tarefaDTO.descricao(), tarefaDTO.status(), tarefaDTO.prioridade(), usuarioLogado);
         Tarefa tarefaSalva = tarefaRepository.save(tarefa);
-        TarefaDTO tarefaResponseDTO = parseToTarefaDTO(tarefaSalva);
+        TarefaResponseDTO tarefaResponseDTO = parseToTarefaResponseDTO(tarefaSalva);
         return tarefaResponseDTO;
     }
 
-    public List<TarefaDTO> listarTarefas(){
+    public List<TarefaResponseDTO> listarTarefas(){
         List<Tarefa> tarefas = tarefaRepository.findAll();
         return parseToTarefasDTO(tarefas);
     }
 
-    public TarefaDTO buscarTarefa(UUID id){
+    public TarefaResponseDTO buscarTarefa(UUID id){
         Tarefa tarefaEncontrada = tarefaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Tarefa Não Encontrada"));
 
-        TarefaDTO tarefaDTO = parseToTarefaDTO(tarefaEncontrada);
-        return tarefaDTO;
+        TarefaResponseDTO tarefaResponseDTO = parseToTarefaResponseDTO(tarefaEncontrada);
+        return tarefaResponseDTO;
     }
 
-    private TarefaDTO parseToTarefaDTO(Tarefa tarefa){
-        TarefaDTO tarefaDTO = new TarefaDTO(
+    public TarefaResponseDTO editarTarefa(UUID id, TarefaDTO tarefaDTO){
+        Tarefa tarefaExistente = tarefaRepository.findById(id)
+                .orElseThrow(() -> new TarefaException(id));
+
+        tarefaExistente.setTitulo(tarefaDTO.titulo());
+        tarefaExistente.setDescricao(tarefaDTO.descricao());
+        tarefaExistente.setStatus(tarefaDTO.status());
+        tarefaExistente.setPrioridade(tarefaDTO.prioridade());
+
+        Tarefa tarefaNova = tarefaRepository.save(tarefaExistente);
+        return parseToTarefaResponseDTO(tarefaNova);
+    }
+
+    private TarefaResponseDTO parseToTarefaResponseDTO(Tarefa tarefa){
+        TarefaResponseDTO tarefaResponseDTO = new TarefaResponseDTO(
           tarefa.getId(),
           tarefa.getTitulo(),
           tarefa.getDescricao(),
@@ -60,15 +71,15 @@ public class TarefaService {
           tarefa.getDataCriacao(),
           tarefa.getDataAtualizacao()
         );
-        return tarefaDTO;
+        return tarefaResponseDTO;
     }
 
-    private List<TarefaDTO> parseToTarefasDTO(List<Tarefa> tarefas){
-        List<TarefaDTO> tarefaDTOs = new ArrayList<>();
+    private List<TarefaResponseDTO> parseToTarefasDTO(List<Tarefa> tarefas){
+        List<TarefaResponseDTO> tarefaResponseDTO = new ArrayList<>();
         for (Tarefa tarefa : tarefas){
-            tarefaDTOs.add(parseToTarefaDTO(tarefa));
+            tarefaResponseDTO.add(parseToTarefaResponseDTO(tarefa));
         }
-        return tarefaDTOs;
+        return tarefaResponseDTO;
     }
 
 }
