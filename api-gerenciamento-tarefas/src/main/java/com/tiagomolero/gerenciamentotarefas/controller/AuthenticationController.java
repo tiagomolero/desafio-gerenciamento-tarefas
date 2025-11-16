@@ -6,6 +6,7 @@ import com.tiagomolero.gerenciamentotarefas.model.usuario.RegisterDTO;
 import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import com.tiagomolero.gerenciamentotarefas.repository.UsuarioRepository;
 import com.tiagomolero.gerenciamentotarefas.security.TokenService;
+import com.tiagomolero.gerenciamentotarefas.service.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,9 @@ public class AuthenticationController {
 
     @Autowired
     TokenService tokenService;
+
+    @Autowired
+    AuthorizationService authorizationService;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Validated AuthenticationDTO authenticationDto) {

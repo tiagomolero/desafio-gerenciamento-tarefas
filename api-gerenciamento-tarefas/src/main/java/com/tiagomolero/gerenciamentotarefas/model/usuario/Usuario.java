@@ -12,11 +12,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "usuarios")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
 public class Usuario implements UserDetails {
 
     @Id
@@ -33,6 +28,8 @@ public class Usuario implements UserDetails {
     private String senha;
 
     private LocalDateTime dataCriacao;
+
+    public Usuario(){}
 
     public Usuario(String nome, String email, String senha){
         this.nome = nome;
@@ -78,5 +75,45 @@ public class Usuario implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
     }
 }

@@ -2,6 +2,7 @@ package com.tiagomolero.gerenciamentotarefas.model.tarefa;
 
 import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,13 +15,18 @@ public class Tarefa {
     @GeneratedValue
     private UUID id;
 
+    @Column(nullable = false, length = 100)
     private String titulo;
+
+    @Column(nullable = false, length = 500)
     private String descricao;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Status status = Status.PENDENTE;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Prioridade prioridade;
 
     @ManyToOne
@@ -30,10 +36,25 @@ public class Tarefa {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;
 
+    public Tarefa(){}
+
+    public Tarefa(String titulo, String descricao, Status status, Prioridade prioridade, Usuario criador){
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.status = status;
+        this.prioridade = prioridade;
+        this.criador = criador;
+    }
+
     @PrePersist
     protected void onCreate(){
         dataCriacao = LocalDateTime.now();
         dataAtualizacao = LocalDateTime.now();
+
+        // Garantir que status tenha um valor padrão se for nulo
+        if (status == null || status.toString().isEmpty()) {
+            status = Status.PENDENTE;
+        }
     }
 
     @PreUpdate
@@ -104,4 +125,5 @@ public class Tarefa {
     public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
         this.dataAtualizacao = dataAtualizacao;
     }
+
 }
