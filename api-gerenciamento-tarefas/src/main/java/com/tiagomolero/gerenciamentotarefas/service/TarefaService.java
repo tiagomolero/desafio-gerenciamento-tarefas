@@ -21,9 +21,6 @@ public class TarefaService {
     TarefaRepository tarefaRepository;
 
     @Autowired
-    UsuarioRepository usuarioRepository;
-
-    @Autowired
     AuthorizationService authorizationService;
 
     public TarefaResponseDTO criarTarefa(TarefaDTO tarefaDTO){
@@ -41,16 +38,14 @@ public class TarefaService {
     }
 
     public TarefaResponseDTO buscarTarefa(UUID id){
-        Tarefa tarefaEncontrada = tarefaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tarefa Não Encontrada"));
-
-        TarefaResponseDTO tarefaResponseDTO = parseToTarefaResponseDTO(tarefaEncontrada);
-        return tarefaResponseDTO;
+        Usuario usuarioLogado = authorizationService.getUsuarioLogado();
+        Tarefa tarefaEncontrada = tarefaRepository.findByIdAndCriadorId(id, usuarioLogado.getId());
+        return parseToTarefaResponseDTO(tarefaEncontrada);
     }
 
     public TarefaResponseDTO editarTarefa(UUID id, TarefaDTO tarefaDTO){
         Tarefa tarefaExistente = tarefaRepository.findById(id)
-                .orElseThrow(() -> new TarefaException(id));
+                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
 
         tarefaExistente.setTitulo(tarefaDTO.titulo());
         tarefaExistente.setDescricao(tarefaDTO.descricao());
@@ -59,6 +54,17 @@ public class TarefaService {
 
         Tarefa tarefaNova = tarefaRepository.save(tarefaExistente);
         return parseToTarefaResponseDTO(tarefaNova);
+    }
+
+    public boolean excluirTarefa(UUID id){
+        Usuario usuarioLogado = authorizationService.getUsuarioLogado();
+        Tarefa tarefaEncontrada = tarefaRepository.findByIdAndCriadorId(id, usuarioLogado.getId());
+        if (tarefaEncontrada != null){
+            tarefaRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private TarefaResponseDTO parseToTarefaResponseDTO(Tarefa tarefa){

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
 
 @Service
 public class TokenService {
@@ -24,6 +25,8 @@ public class TokenService {
             String token = JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(usuario.getUsername())
+                    .withClaim("id", usuario.getId().toString())
+                    .withClaim("email", usuario.getEmail())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
             return token;
@@ -42,6 +45,34 @@ public class TokenService {
                     .getSubject();
         } catch (JWTVerificationException exception){
             return "";
+        }
+    }
+
+    public UUID getIdUsuarioFromToken(String token){
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            var decodedJWT = JWT.require(algorithm)
+                    .withIssuer("auth-api")
+                    .build()
+                    .verify(token);
+
+            return UUID.fromString(decodedJWT.getClaim("id").asString());
+        }catch (JWTVerificationException exception){
+            throw new RuntimeException("Token inválido", exception);
+        }
+    }
+
+    public String getEmailFromToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            var decodedJWT = JWT.require(algorithm)
+                    .withIssuer("auth-api")
+                    .build()
+                    .verify(token);
+
+            return decodedJWT.getClaim("email").asString();
+        } catch (JWTVerificationException exception) {
+            throw new RuntimeException("Token inválido", exception);
         }
     }
 

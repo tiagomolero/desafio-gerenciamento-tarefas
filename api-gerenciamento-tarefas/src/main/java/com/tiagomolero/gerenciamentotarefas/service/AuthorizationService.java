@@ -22,7 +22,6 @@ public class AuthorizationService implements UserDetailsService {
         return usuarioRepository.findByEmail(username);
     }
 
-
     public Usuario getUsuarioLogado(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()){

@@ -7,7 +7,10 @@ import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import com.tiagomolero.gerenciamentotarefas.repository.UsuarioRepository;
 import com.tiagomolero.gerenciamentotarefas.security.TokenService;
 import com.tiagomolero.gerenciamentotarefas.service.AuthorizationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,7 +38,7 @@ public class AuthenticationController {
     AuthorizationService authorizationService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Validated AuthenticationDTO authenticationDto) {
+    public ResponseEntity login(@Valid @RequestBody AuthenticationDTO authenticationDto) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDto.email(), authenticationDto.senha());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
@@ -45,8 +48,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Validated RegisterDTO registerDTO){
-        if (this.usuarioRepository.findByEmail(registerDTO.email()) != null) return ResponseEntity.badRequest().build();
+    public ResponseEntity register(@Valid @RequestBody RegisterDTO registerDTO){
+        if (this.usuarioRepository.findByEmail(registerDTO.email()) != null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Já existe um usuário cadastrado com o e-mail informado!");
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.senha());
         Usuario novoUsuario = new Usuario(registerDTO.nome(), registerDTO.email(), encryptedPassword);

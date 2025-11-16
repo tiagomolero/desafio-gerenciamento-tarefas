@@ -52,12 +52,8 @@ public class TarefaController {
         if (!tarefaRepository.existsById(id)){
             return ResponseEntity.notFound().build();
         }
-        try {
-            TarefaResponseDTO tarefaResponseEditadaDTO = tarefaService.editarTarefa(id, tarefaDTO);
-            return ResponseEntity.ok(tarefaResponseEditadaDTO);
-        }catch (TarefaException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        TarefaResponseDTO tarefaResponseEditadaDTO = tarefaService.editarTarefa(id, tarefaDTO);
+        return ResponseEntity.ok(tarefaResponseEditadaDTO);
     }
 
     @DeleteMapping("/excluir/{id}")
@@ -66,8 +62,11 @@ public class TarefaController {
         if (!tarefaRepository.existsById(id)){
             return ResponseEntity.notFound().build();
         }
-        tarefaRepository.deleteById(id);
-        return ResponseEntity.ok().body("Tarefa excluída com sucesso");
+        boolean excluiuTarefa = tarefaService.excluirTarefa(id);
+        if (excluiuTarefa){
+            return ResponseEntity.ok().body("Tarefa excluída com sucesso");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Você não é o criador dessa tarefa, portanto você não poderá excluí-la");
     }
 
 }
