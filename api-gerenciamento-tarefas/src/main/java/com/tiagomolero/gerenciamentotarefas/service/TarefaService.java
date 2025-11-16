@@ -35,8 +35,9 @@ public class TarefaService {
     }
 
     public List<TarefaResponseDTO> listarTarefas(){
-        List<Tarefa> tarefas = tarefaRepository.findAll();
-        return parseToTarefasDTO(tarefas);
+        Usuario usuarioLogado = authorizationService.getUsuarioLogado();
+        List<Tarefa> tarefas = tarefaRepository.findByCriadorId(usuarioLogado.getId());
+        return parseToTarefasResponseDTO(tarefas);
     }
 
     public TarefaResponseDTO buscarTarefa(UUID id){
@@ -74,7 +75,7 @@ public class TarefaService {
         return tarefaResponseDTO;
     }
 
-    private List<TarefaResponseDTO> parseToTarefasDTO(List<Tarefa> tarefas){
+    private List<TarefaResponseDTO> parseToTarefasResponseDTO(List<Tarefa> tarefas){
         List<TarefaResponseDTO> tarefaResponseDTO = new ArrayList<>();
         for (Tarefa tarefa : tarefas){
             tarefaResponseDTO.add(parseToTarefaResponseDTO(tarefa));
