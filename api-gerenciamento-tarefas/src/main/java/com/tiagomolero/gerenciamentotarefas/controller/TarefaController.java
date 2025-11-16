@@ -7,6 +7,7 @@ import com.tiagomolero.gerenciamentotarefas.model.tarefa.TarefaResponseDTO;
 import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import com.tiagomolero.gerenciamentotarefas.repository.TarefaRepository;
 import com.tiagomolero.gerenciamentotarefas.service.TarefaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class TarefaController {
     TarefaService tarefaService;
 
     @PostMapping("/criar")
-    public ResponseEntity<TarefaResponseDTO> criarTarefa(@RequestBody TarefaDTO tarefaDTO){
+    public ResponseEntity<TarefaResponseDTO> criarTarefa(@Valid @RequestBody TarefaDTO tarefaDTO){
         TarefaResponseDTO tarefaCriada = tarefaService.criarTarefa(tarefaDTO);
         return ResponseEntity.ok(tarefaCriada);
     }
@@ -47,7 +48,7 @@ public class TarefaController {
     }
 
     @PutMapping("/editar/{id}")
-    public ResponseEntity<TarefaResponseDTO> editarTarefa(@PathVariable(value = "id") UUID id, @RequestBody TarefaDTO tarefaDTO){
+    public ResponseEntity<TarefaResponseDTO> editarTarefa(@PathVariable(value = "id") UUID id, @Valid @RequestBody TarefaDTO tarefaDTO){
         if (!tarefaRepository.existsById(id)){
             return ResponseEntity.notFound().build();
         }

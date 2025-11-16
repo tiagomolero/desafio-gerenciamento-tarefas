@@ -2,6 +2,7 @@ package com.tiagomolero.gerenciamentotarefas.model.tarefa;
 
 import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
