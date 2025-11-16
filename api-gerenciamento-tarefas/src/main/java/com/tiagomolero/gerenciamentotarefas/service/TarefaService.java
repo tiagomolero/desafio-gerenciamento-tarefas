@@ -7,7 +7,10 @@ import com.tiagomolero.gerenciamentotarefas.model.tarefa.TarefaResponseDTO;
 import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import com.tiagomolero.gerenciamentotarefas.repository.TarefaRepository;
 import com.tiagomolero.gerenciamentotarefas.repository.UsuarioRepository;
+import com.tiagomolero.gerenciamentotarefas.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +25,9 @@ public class TarefaService {
 
     @Autowired
     AuthorizationService authorizationService;
+
+    @Autowired
+    TokenService tokenService;
 
     public TarefaResponseDTO criarTarefa(TarefaDTO tarefaDTO){
         Usuario usuarioLogado = authorizationService.getUsuarioLogado();
@@ -44,16 +50,19 @@ public class TarefaService {
     }
 
     public TarefaResponseDTO editarTarefa(UUID id, TarefaDTO tarefaDTO){
-        Tarefa tarefaExistente = tarefaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+        Usuario usuarioLogado = authorizationService.getUsuarioLogado();
+        Tarefa tarefaExistente = tarefaRepository.findByIdAndCriadorId(id, usuarioLogado.getId());
 
-        tarefaExistente.setTitulo(tarefaDTO.titulo());
-        tarefaExistente.setDescricao(tarefaDTO.descricao());
-        tarefaExistente.setStatus(tarefaDTO.status());
-        tarefaExistente.setPrioridade(tarefaDTO.prioridade());
+        if (tarefaExistente != null){
+            tarefaExistente.setTitulo(tarefaDTO.titulo());
+            tarefaExistente.setDescricao(tarefaDTO.descricao());
+            tarefaExistente.setStatus(tarefaDTO.status());
+            tarefaExistente.setPrioridade(tarefaDTO.prioridade());
 
-        Tarefa tarefaNova = tarefaRepository.save(tarefaExistente);
-        return parseToTarefaResponseDTO(tarefaNova);
+            Tarefa tarefaNova = tarefaRepository.save(tarefaExistente);
+            return parseToTarefaResponseDTO(tarefaNova);
+        }
+        return null;
     }
 
     public boolean excluirTarefa(UUID id){

@@ -48,12 +48,15 @@ public class TarefaController {
     }
 
     @PutMapping("/editar/{id}")
-    public ResponseEntity<TarefaResponseDTO> editarTarefa(@PathVariable(value = "id") UUID id, @Valid @RequestBody TarefaDTO tarefaDTO){
+    public ResponseEntity<?> editarTarefa(@PathVariable(value = "id") UUID id, @Valid @RequestBody TarefaDTO tarefaDTO){
         if (!tarefaRepository.existsById(id)){
             return ResponseEntity.notFound().build();
         }
         TarefaResponseDTO tarefaResponseEditadaDTO = tarefaService.editarTarefa(id, tarefaDTO);
-        return ResponseEntity.ok(tarefaResponseEditadaDTO);
+        if (tarefaResponseEditadaDTO != null){
+            return ResponseEntity.ok(tarefaResponseEditadaDTO);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Você não é o criador dessa tarefa, portanto você não poderá edita-la");
     }
 
     @DeleteMapping("/excluir/{id}")
