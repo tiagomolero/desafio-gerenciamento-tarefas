@@ -27,6 +27,8 @@ public class SeedDataConfig implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        if (usuarioRepository.count() > 0) return;
+
         Usuario usuario1 = new Usuario("Admin Teste", "admin@teste.com",
                 passwordEncoder.encode("Teste@123"));
 
