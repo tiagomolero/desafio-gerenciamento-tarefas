@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_tarefas
+    restart: always
+    environment:
+      POSTGRES_DB: tarefasdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: desafio@123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./api-gerenciamento-tarefas
+    container_name: api_tarefas
+    restart: always
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/tarefasdb
+      DB_USERNAME: user
+      DB_PASSWORD: desafio@123
+      JWT_SECRET: my-secret-key
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_tarefas
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user
+      PGADMIN_DEFAULT_PASSWORD: desafio@123
+    ports:
+      - "8082:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  pgadmin_data:
