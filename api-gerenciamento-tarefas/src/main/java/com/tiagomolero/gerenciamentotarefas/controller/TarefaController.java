@@ -21,10 +21,10 @@ import java.util.UUID;
 public class TarefaController {
 
     @Autowired
-    TarefaRepository tarefaRepository;
+    private TarefaRepository tarefaRepository;
 
     @Autowired
-    TarefaService tarefaService;
+    private TarefaService tarefaService;
 
     @PostMapping("/criar")
     public ResponseEntity<TarefaResponseDTO> criarTarefa(@Valid @RequestBody TarefaDTO tarefaDTO){

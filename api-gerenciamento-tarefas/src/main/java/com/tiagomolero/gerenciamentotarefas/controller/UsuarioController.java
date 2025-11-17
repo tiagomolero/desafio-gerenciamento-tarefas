@@ -12,7 +12,7 @@ import java.util.List;
 public class UsuarioController {
 
     @Autowired
-    UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping("/listar")
     public List<Usuario> listarUsuarios(){

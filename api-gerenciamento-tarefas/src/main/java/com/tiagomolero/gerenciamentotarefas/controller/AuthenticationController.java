@@ -32,10 +32,10 @@ public class AuthenticationController {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    TokenService tokenService;
+    private TokenService tokenService;
 
     @Autowired
-    AuthorizationService authorizationService;
+    private AuthorizationService authorizationService;
 
     @PostMapping("/login")
     public ResponseEntity login(@Valid @RequestBody AuthenticationDTO authenticationDto) {
