@@ -1,10 +1,7 @@
 package com.tiagomolero.gerenciamentotarefas.service;
 
 import com.tiagomolero.gerenciamentotarefas.exception.TarefaException;
-import com.tiagomolero.gerenciamentotarefas.model.tarefa.Status;
-import com.tiagomolero.gerenciamentotarefas.model.tarefa.Tarefa;
-import com.tiagomolero.gerenciamentotarefas.model.tarefa.TarefaDTO;
-import com.tiagomolero.gerenciamentotarefas.model.tarefa.TarefaResponseDTO;
+import com.tiagomolero.gerenciamentotarefas.model.tarefa.*;
 import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import com.tiagomolero.gerenciamentotarefas.repository.TarefaRepository;
 import com.tiagomolero.gerenciamentotarefas.repository.UsuarioRepository;
@@ -15,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,9 +36,42 @@ public class TarefaService {
         return tarefaResponseDTO;
     }
 
-    public List<TarefaResponseDTO> listarTarefas(){
+    public List<TarefaResponseDTO> listarTarefasComFiltros(String statusString, String prioridadeString){
         Usuario usuarioLogado = authorizationService.getUsuarioLogado();
-        List<Tarefa> tarefas = tarefaRepository.findByCriadorId(usuarioLogado.getId());
+
+         Status status = null;
+        if (statusString != null){
+            try{
+                status = Status.valueOf(statusString.toUpperCase());
+            }catch (IllegalArgumentException e){
+                throw new IllegalArgumentException("Status inválido: " + statusString);
+            }
+        }
+
+        Prioridade prioridade = null;
+        if (prioridadeString != null){
+            try{
+                prioridade = Prioridade.valueOf(prioridadeString.toUpperCase());
+            }catch (IllegalArgumentException e){
+                throw new IllegalArgumentException("Prioridade inválida: " + prioridadeString);
+            }
+        }
+
+        List<Tarefa> tarefas;
+
+        if (status != null && prioridade != null){
+            tarefas = tarefaRepository.findByCriadorIdAndStatusAndPrioridade(usuarioLogado.getId(), status, prioridade);
+        } else if (status != null){
+            tarefas = tarefaRepository.findByCriadorIdAndStatus(usuarioLogado.getId(), status);
+        } else if (prioridade != null) {
+            tarefas = tarefaRepository.findByCriadorIdAndPrioridade(usuarioLogado.getId(), prioridade);
+        } else {
+            tarefas = tarefaRepository.findByCriadorId(usuarioLogado.getId());
+        }
+
+        // Ordenação do mais recente primeiro
+        tarefas.sort(Comparator.comparing(Tarefa::getDataCriacao).reversed());
+
         return parseToTarefasResponseDTO(tarefas);
     }
 

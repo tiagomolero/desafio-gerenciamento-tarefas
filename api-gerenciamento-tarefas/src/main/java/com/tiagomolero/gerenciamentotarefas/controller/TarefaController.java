@@ -33,8 +33,11 @@ public class TarefaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TarefaResponseDTO>> listaTarefas(){
-        List<TarefaResponseDTO> tarefaResponseDTOs = tarefaService.listarTarefas();
+    public ResponseEntity<List<TarefaResponseDTO>> listaTarefas(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String prioridade
+    ){
+        List<TarefaResponseDTO> tarefaResponseDTOs = tarefaService.listarTarefasComFiltros(status, prioridade);
         return ResponseEntity.ok(tarefaResponseDTOs);
     }
 
