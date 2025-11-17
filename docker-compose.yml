@@ -29,20 +29,6 @@ services:
     depends_on:
       - postgres
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin_tarefas
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: user
-      PGADMIN_DEFAULT_PASSWORD: desafio@123
-    ports:
-      - "8082:80"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    depends_on:
-      - postgres
-
 volumes:
   postgres_data:
   pgadmin_data:
