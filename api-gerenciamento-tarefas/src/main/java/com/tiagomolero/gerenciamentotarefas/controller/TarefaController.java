@@ -48,7 +48,7 @@ public class TarefaController {
     }
 
     @PutMapping("/editar/{id}")
-    public ResponseEntity<?> editarTarefa(@PathVariable(value = "id") UUID id, @Valid @RequestBody TarefaDTO tarefaDTO){
+    public ResponseEntity<?> editarTarefa(@Valid @PathVariable(value = "id") UUID id, @RequestBody TarefaDTO tarefaDTO){
         if (!tarefaRepository.existsById(id)){
             return ResponseEntity.notFound().build();
         }

@@ -1,6 +1,7 @@
 package com.tiagomolero.gerenciamentotarefas.service;
 
 import com.tiagomolero.gerenciamentotarefas.exception.TarefaException;
+import com.tiagomolero.gerenciamentotarefas.model.tarefa.Status;
 import com.tiagomolero.gerenciamentotarefas.model.tarefa.Tarefa;
 import com.tiagomolero.gerenciamentotarefas.model.tarefa.TarefaDTO;
 import com.tiagomolero.gerenciamentotarefas.model.tarefa.TarefaResponseDTO;
@@ -56,8 +57,31 @@ public class TarefaService {
         if (tarefaExistente != null){
             tarefaExistente.setTitulo(tarefaDTO.titulo());
             tarefaExistente.setDescricao(tarefaDTO.descricao());
-            tarefaExistente.setStatus(tarefaDTO.status());
-            tarefaExistente.setPrioridade(tarefaDTO.prioridade());
+
+            if (tarefaDTO.prioridade() != null){
+                tarefaExistente.setPrioridade(tarefaDTO.prioridade());
+            }
+
+            Status statusAtual = tarefaExistente.getStatus();
+            Status novoStatus = tarefaDTO.status() != null ? tarefaDTO.status() : statusAtual;
+
+            if (!novoStatus.equals(statusAtual)){
+                switch (statusAtual){
+                    case PENDENTE:
+                        if (!(novoStatus == Status.EM_PROGRESSO || novoStatus == Status.CONCLUIDA)){
+                            throw new IllegalArgumentException("Fluxo de status inválido: de PENDENTE só pode ir para EM_PROGRESSO ou CONCLUIDA");
+                        }
+                        break;
+                    case EM_PROGRESSO:
+                        if (novoStatus != Status.CONCLUIDA){
+                            throw new IllegalArgumentException("Fluxo de status inválido: de EM_PROGRESSO só pode ir para CONCLUIDA");
+                        }
+                        break;
+                    case CONCLUIDA:
+                        throw new IllegalArgumentException("Status 'CONCLUIDA' não pode ser alterado");
+                }
+                tarefaExistente.setStatus(novoStatus);
+            }
 
             Tarefa tarefaNova = tarefaRepository.save(tarefaExistente);
             return parseToTarefaResponseDTO(tarefaNova);

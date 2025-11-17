@@ -28,7 +28,7 @@ public class Tarefa {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Prioridade prioridade;
+    private Prioridade prioridade = Prioridade.MEDIA;
 
     @ManyToOne
     @JoinColumn(name = "criador_id")
@@ -55,6 +55,9 @@ public class Tarefa {
         // Garantir que status tenha um valor padrão se for nulo
         if (status == null || status.toString().isEmpty()) {
             status = Status.PENDENTE;
+        }
+        if (prioridade == null || prioridade.toString().isEmpty()){
+            prioridade = Prioridade.MEDIA;
         }
     }
 
