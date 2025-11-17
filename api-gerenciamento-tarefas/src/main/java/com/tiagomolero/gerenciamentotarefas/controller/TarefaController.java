@@ -59,7 +59,7 @@ public class TarefaController {
         if (tarefaResponseEditadaDTO != null){
             return ResponseEntity.ok(tarefaResponseEditadaDTO);
         }
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Você não é o criador dessa tarefa, portanto você não poderá edita-la");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você não é o criador dessa tarefa, portanto você não poderá edita-la");
     }
 
     @DeleteMapping("/excluir/{id}")
@@ -72,7 +72,7 @@ public class TarefaController {
         if (excluiuTarefa){
             return ResponseEntity.ok().body("Tarefa excluída com sucesso");
         }
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Você não é o criador dessa tarefa, portanto você não poderá excluí-la");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você não é o criador dessa tarefa, portanto você não poderá excluí-la");
     }
 
 }
