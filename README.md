@@ -106,7 +106,7 @@ Cada tarefa possui:
 - Título
 - Descrição
 - Prioridade (`BAIXA`, `MEDIA`, `ALTA`)
-- Status (`PENDENTE`, `EM_ANDAMENTO`, `CONCLUIDA`, `CANCELADA`)
+- Status (`PENDENTE`, `EM_ANDAMENTO`, `CONCLUIDA`)
 - Datas de criação e atualização
 - Usuário responsável
 
