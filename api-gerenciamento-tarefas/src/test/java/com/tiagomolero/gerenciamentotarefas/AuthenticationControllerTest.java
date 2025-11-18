@@ -1,6 +1,7 @@
-package com.tiagomolero.gerenciamentotarefas.controller;
+package com.tiagomolero.gerenciamentotarefas;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tiagomolero.gerenciamentotarefas.controller.AuthenticationController;
 import com.tiagomolero.gerenciamentotarefas.model.usuario.AuthenticationDTO;
 import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import com.tiagomolero.gerenciamentotarefas.security.TokenService;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthenticationController.class)
-@Import(com.tiagomolero.gerenciamentotarefas.controller.TestSecurityConfig.class)
+@Import(TestSecurityConfig.class)
 public class AuthenticationControllerTest {
 
     @Autowired
