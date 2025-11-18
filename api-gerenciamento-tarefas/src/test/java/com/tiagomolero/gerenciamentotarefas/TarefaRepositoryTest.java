@@ -1,7 +1,9 @@
-package com.tiagomolero.gerenciamentotarefas.repository;
+package com.tiagomolero.gerenciamentotarefas;
 
 import com.tiagomolero.gerenciamentotarefas.model.tarefa.*;
 import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
+import com.tiagomolero.gerenciamentotarefas.repository.TarefaRepository;
+import com.tiagomolero.gerenciamentotarefas.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

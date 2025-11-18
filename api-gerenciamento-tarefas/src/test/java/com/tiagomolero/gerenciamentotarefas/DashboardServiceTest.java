@@ -1,8 +1,10 @@
-package com.tiagomolero.gerenciamentotarefas.service;
+package com.tiagomolero.gerenciamentotarefas;
 
 import com.tiagomolero.gerenciamentotarefas.model.tarefa.Status;
 import com.tiagomolero.gerenciamentotarefas.model.usuario.Usuario;
 import com.tiagomolero.gerenciamentotarefas.repository.TarefaRepository;
+import com.tiagomolero.gerenciamentotarefas.service.AuthorizationService;
+import com.tiagomolero.gerenciamentotarefas.service.DashboardService;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
 
